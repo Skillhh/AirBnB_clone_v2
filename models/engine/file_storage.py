@@ -23,9 +23,16 @@ class FileStorage:
     __file_path = 'file.json'
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """ Returns __objects dictionary """
-        return (FileStorage.__objects)
+        if cls is None:
+            return __class__.__objects
+        else:
+            list_obj = {}
+            for key, value in self.__objects.items():
+                if value.__class__.__name__ == cls.__name__:
+                    list_obj.update({key: value})
+            return list_obj
 
     def new(self, obj):
         """ Sets in __objects the obj with key <obj class name>.id """
@@ -48,8 +55,13 @@ class FileStorage:
                 for key, value in tmp_objs.items():
                     self.new(classes[value['__class__']](**value))
 
-    def delete(self, classes, Id):
+    def delete(self, obj=None):
         """ Delete object """
-        obj = "{}.{}".format(classes, Id)
-        FileStorage.__objects.pop(obj)
-        self.save()
+        if obj is not None:
+            if obj in __class__.__objects.keys():
+                del __class__.__objects[obj]
+            else:
+                _obj = obj.__class__.__name__+"." + obj.id
+                if _obj in __class__.__objects.keys():
+                    del __class__.__objects[_obj]
+            self.save()
