@@ -17,6 +17,13 @@ class BaseModel:
                             value, '%Y-%m-%dT%H:%M:%S.%f'))
                     else:
                         setattr(self, key, value)
+            if "id" is not kwargs:
+                self.id = str(uuid4())
+            if 'created_at' is not kwargs:
+                self.created_at = datetime.now()
+            if 'updated_at' is not kwargs:
+                self.updated_at = datetime.now()
+            models.storage.new(self)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
