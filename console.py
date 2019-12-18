@@ -21,16 +21,32 @@ class HBNBCommand(cmd.Cmd):
                "City": City, "Amenity": Amenity, "Place": Place,
                "Review": Review}
 
-    def do_create(self, name):
+    def do_create(self, line):
         """Create a new instance"""
-        if name == '':
+
+        args = line.split(' ')
+        if args[0] == '':
             print("** class name missing **")
-        elif name in HBNBCommand.classes:
-            Class = HBNBCommand.classes.get(name)()
+        elif len(args) > 1:
+            kwargs = {}
+            for idx in range(1, len(args)):
+                subarg = args[idx].split('=')
+                subarg[1] = subarg[1].replace('_', ' ')
+                if '"' in subarg[1:]:
+                    subarg[1] = subarg[1].replace('"', '\"')
+                else:
+                    subarg[1] = eval(subarg[1])
+                kwargs.update(dict(zip(subarg[::2], subarg[1::2])))
+            Class = HBNBCommand.classes.get(args[0])(**kwargs)
             Class.save()
             print(Class.id)
-        else:
-            print("** class doesn't exist **")
+        elif len(args) == 1:
+            if args[0] in HBNBCommand.classes:
+                Class = HBNBCommand.classes.get(args[0])()
+                Class.save()
+                print(Class.id)
+            else:
+                print("** class doesn't exist **")
 
     def do_destroy(self, line):
         """Deletes an instance
@@ -44,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
                     objs = storage.all()
                     obj = "{}.{}".format(args[0], args[1])
                     if obj in objs.keys():
-                        storage.delete(args[0], args[1])
+                        storage.delete(obj)
                     else:
                         print("** no instance found **")
             else:
@@ -67,8 +83,7 @@ class HBNBCommand(cmd.Cmd):
                 objs = storage.all()
                 obj = "{}.{}".format(args[0], args[1])
                 if obj in objs.keys():
-                    label = getattr(objs[obj], args[2], "")
-                    setattr(objs[obj], args[2], type(label)(args[3]))
+                    setattr(objs[obj], args[2], eval(args[3]))
                     objs[obj].save()
                 else:
                     print("** no instance found **")
@@ -82,7 +97,6 @@ class HBNBCommand(cmd.Cmd):
         """
         list_objs = []
         all_objs = list(storage.all().values())
-        print(all_objs)
         if name == "":
             for objs in all_objs:
                 list_objs.append(str(objs))
