@@ -60,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
                     objs = storage.all()
                     obj = "{}.{}".format(args[0], args[1])
                     if obj in objs.keys():
-                        storage.delete(args[0], args[1])
+                        storage.delete(obj)
                     else:
                         print("** no instance found **")
             else:
@@ -97,7 +97,6 @@ class HBNBCommand(cmd.Cmd):
         """
         list_objs = []
         all_objs = list(storage.all().values())
-        print(all_objs)
         if name == "":
             for objs in all_objs:
                 list_objs.append(str(objs))
