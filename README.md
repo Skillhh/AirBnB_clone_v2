@@ -116,6 +116,6 @@
 </ul>
 </body>
 <footer>
-Made by: <strong><a href="https://github.com/Skillhh">Giovanny Andres Ortegon Espitia</a>, <a href="https://github.com/DanielBaquero28">Daniel Baquero</a>, <a href="https://github.com/arq-gabo">José Gabriel Guerra</a></strong>
+<strong><a href="https://github.com/Skillhh">Giovanny Andres Ortegon Espitia</a>, <a href="https://github.com/DanielBaquero28">Daniel Baquero</a>, <a href="https://github.com/arq-gabo">José Gabriel Guerra</a>.</strong>
 </footer>
 </html>
