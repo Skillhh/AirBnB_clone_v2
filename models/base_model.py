@@ -2,11 +2,20 @@
 """ Importing necessary modules """
 from uuid import uuid4
 from datetime import datetime
+from sqlqlchemy import Column, String, Datetime
+from sqlalchemy.ext.declarative import declarative_base
 import models
+
+Base = declarative_base()
 
 
 class BaseModel:
     """ SuperClass from which the rest of the classes will inherit """
+    id = Column(String(60), unique=True,
+                nullable=False, primary_key=True)
+    created_at = Column(Datetime, nullable=False, datetime.utcnow())
+    updated_at = Column(Datetime, nullable=False, datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
         """ Constructor method """
         if kwargs is not None and len(kwargs) != 0:
@@ -23,12 +32,10 @@ class BaseModel:
                 self.created_at = datetime.now()
             if 'updated_at' is not kwargs:
                 self.updated_at = datetime.now()
-            models.storage.new(self)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            models.storage.new(self)
 
     def __str__(self):
         """ Returns the string representation of class name, id and dict """
@@ -43,6 +50,7 @@ class BaseModel:
         with the current datetime
         """
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -61,3 +69,10 @@ class BaseModel:
         dict_objs['__class__'] = self.__class__.__name__
 
         return (dict_objs)
+
+    def delete(self):
+        """ Method Delet
+
+        Delete the current instance
+        """
+        models.storage.delete(self)

@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """ Imports """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """
     Class City
 
@@ -12,5 +13,6 @@ class City(BaseModel):
         name (str): city name
 
     """
-    state_id = ""
-    name = ""
+    __tablename__ = 'cities'
+    state_id = Column(String(60), nullable=False)
+    name = Column(String(128), nullable=Falsei, ForeignKey('states.id'))
