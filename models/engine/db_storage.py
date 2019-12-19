@@ -16,6 +16,7 @@ from models.review import Review
 class DBStorage:
     __engine = None
     __session = None
+    __classes = [User, State, City, Amenity, Place, Review]
 
     def __init__(self):
         """ Public Instance """
@@ -30,4 +31,37 @@ class DBStorage:
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
-        """  """
+        """ Show all method """
+        __objs = {}
+        if cls is not None:
+            objs = self.__session.query(eval(cls))
+            for value in objs:
+                key = "{}.{}".format(cls, value.id)
+                __objs.update({key: value})
+        else:
+            for __class in self.__classes:
+                objs = self.__session.query(__class)
+                for value in objs:
+                    key = "{}.{}".format(cls, value.id)
+                    objs.update({key: value})
+        return __objs
+
+    def new(self, obj):
+        """ Create New method """
+        self.__session.add(obj)
+
+    def save(self):
+        """ Save """
+        if obj is not None:
+            self.__session.delete(obj)
+
+    def reload(self):
+        """ Open session """
+        Base.metadata.create_all(self.__engine)
+        session = sessionmaker(bind=self.__engine,
+                               expirre_on_commit=False)
+        self.__session = scoped_session(session)()
+
+    def close(self):
+        """ Close session """
+        Session.close(self.__session)
