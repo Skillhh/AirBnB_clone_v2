@@ -16,7 +16,8 @@ from models.review import Review
 class DBStorage:
     __engine = None
     __session = None
-    __classes = [User, State, City, Amenity, Place, Review]
+#    __classes = [User, State, City, Amenity, Place, Review]
+    __classes = [State, City]
 
     def __init__(self):
         """ Public Instance """
@@ -27,7 +28,7 @@ class DBStorage:
                                              environ['HBNB_MYSQL_DB']),
                                       pool_pre_ping=True)
 
-        if environ['HBNB_ENV'] == 'test':
+        if 'HBNB_ENV' in environ and environ['HBNB_ENV'] == 'test':
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
@@ -43,7 +44,7 @@ class DBStorage:
                 objs = self.__session.query(__class)
                 for value in objs:
                     key = "{}.{}".format(cls, value.id)
-                    objs.update({key: value})
+                    __objs.update({key: value})
         return __objs
 
     def new(self, obj):
@@ -52,6 +53,10 @@ class DBStorage:
 
     def save(self):
         """ Save """
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """ Delete  """
         if obj is not None:
             self.__session.delete(obj)
 
@@ -59,7 +64,7 @@ class DBStorage:
         """ Open session """
         Base.metadata.create_all(self.__engine)
         session = sessionmaker(bind=self.__engine,
-                               expirre_on_commit=False)
+                               expire_on_commit=False)
         self.__session = scoped_session(session)()
 
     def close(self):
