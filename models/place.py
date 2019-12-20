@@ -7,6 +7,7 @@ from sqlalchemy import ForeignKey, Table
 from sqlalchemy.orm import relationship
 from os import environ
 
+
 class Place(BaseModel, Base):
     """
     Class Place
@@ -37,8 +38,8 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, default=0, nullable=False)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
-        reviews = relationship("Reviews", cascade="all, delete", backref="place")
-        
+        reviews = relationship(
+            "Reviews", cascade="all, delete", backref="place")
 
     else:
         city_id = ''
