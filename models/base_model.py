@@ -2,7 +2,7 @@
 """ Importing necessary modules """
 from uuid import uuid4
 from datetime import datetime
-from sqlqlchemy import Column, String, Datetime
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import models
 
@@ -13,8 +13,8 @@ class BaseModel:
     """ SuperClass from which the rest of the classes will inherit """
     id = Column(String(60), unique=True,
                 nullable=False, primary_key=True)
-    created_at = Column(Datetime, nullable=False, datetime.utcnow())
-    updated_at = Column(Datetime, nullable=False, datetime.utcnow())
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """ Constructor method """
