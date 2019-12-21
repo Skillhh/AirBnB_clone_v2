@@ -2,10 +2,21 @@
 """ Imports """
 from models.base_model import BaseModel, Base
 import models
-from sqlalchemy import Column, String, Integer, Float
+from sqlalchemy import Column, String, Integer, Float, Table
 from sqlalchemy import ForeignKey, Table
 from sqlalchemy.orm import relationship
-from os import environ
+from os import environ, getenv
+
+
+envstorage = getenv("HBNB_TYPE_STORAGE")
+if envstorage == "db":
+    place_amenity = Table("place_amenity", Base.metadata,
+                          Column("place_id", String(60),
+                                 ForeignKey('places.id'),
+                                 primary_key=True, nullable=False),
+                          Column("amenity_id", String(60),
+                                 ForeignKey('amenities.id'),
+                                 primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -40,6 +51,9 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         reviews = relationship(
             "Review", cascade="all, delete", backref="place")
+        amenities = relationship('Amenity', secondary='place_amenity',
+                                 viewonly=False,
+                                 back_populates='place_amenities')
 
     else:
         city_id = ''
@@ -52,6 +66,27 @@ class Place(BaseModel, Base):
         price_by_night = 0
         latitude = 0
         longitude = 0
+
+        @property
+        def reviews(self):
+            """Method getter setter for return Cities
+            instance of current state_id"""
+            reviews = []
+            objs = models.storage.all(models.review.Review)
+            for val in objs:
+                if objs[key].place_id is self.id:
+                    cities.append(objs[key])
+            return reviews
+
+        def amenities(self):
+            """Method getter setter for return Cities
+            instance of current state_id"""
+            amenities = []
+            objs = models.storage.all(models.amenity.Amenity)
+            for val in objs:
+                if objs[val].place_id is self.id:
+                    amenities.append(objs[val])
+            return amenities
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
