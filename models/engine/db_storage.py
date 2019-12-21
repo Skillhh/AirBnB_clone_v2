@@ -16,8 +16,7 @@ from models.review import Review
 class DBStorage:
     __engine = None
     __session = None
-#    __classes = [User, State, City, Amenity, Place, Review]
-    __classes = [User, State, City, Place, Review]
+    __classes = [User, State, City, Place, Review, Amenity]
 
     def __init__(self):
         """ Public Instance """
