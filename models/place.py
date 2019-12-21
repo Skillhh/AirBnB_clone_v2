@@ -78,6 +78,7 @@ class Place(BaseModel, Base):
                     cities.append(objs[key])
             return reviews
 
+        @property
         def amenities(self):
             """Method getter setter for return Cities
             instance of current state_id"""
